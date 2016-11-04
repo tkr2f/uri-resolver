@@ -44,6 +44,9 @@ class UriResolverTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('http://a/', $this->UriResolver->resolve('http://a/b/c/d;p?q', '../..'));
         $this->assertEquals('http://a/', $this->UriResolver->resolve('http://a/b/c/d;p?q', '../../'));
         $this->assertEquals('http://a/g', $this->UriResolver->resolve('http://a/b/c/d;p?q', '../../g'));
+
+        //additional
+        $this->assertEquals('http://a/b/c#s', $this->UriResolver->resolve('http://a/b/c', '#s'));
     }
 
     public function testResolvePeculiarPattern()
