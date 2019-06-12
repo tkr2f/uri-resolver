@@ -3,7 +3,7 @@
          colors="true"
          backupGlobals="false">
     <testsuites>
-        <testsuite>
+        <testsuite name="integration">
             <directory>./tests</directory>
         </testsuite>
     </testsuites>
