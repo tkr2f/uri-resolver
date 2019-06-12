@@ -4,40 +4,48 @@ namespace Tkr2f\UriResolver;
 
 /**
  * Class UriResolver
+ *
  * @package Tkr2f¥UriResolver
- * @author Takashi Iwata <x.takashi.iwata.x@gmail.com>
+ * @author  Takashi Iwata <x.takashi.iwata.x@gmail.com>
  */
 class UriResolver
 {
     /**
-     * @param $baseUri string
-     * @param $referenceUri string
+     * @param string $baseUri
+     * @param string $referenceUri
+     *
      * @return string
      */
-    public function resolve($baseUri, $referenceUri)
+    public function resolve(string $baseUri, string $referenceUri): string
     {
         $baseUri = parse_url($baseUri);
         $referenceUri = parse_url($referenceUri);
 
         $targetUri = [];
         if (!isset($referenceUri['scheme']) or $referenceUri['scheme'] === '') {
-            $targetUri = $this->caseNoScheme($baseUri, $referenceUri, $targetUri);
+            $targetUri = $this->caseNoScheme($baseUri, $referenceUri,
+                $targetUri);
         } else {
             $targetUri['scheme'] = $referenceUri['scheme'];
-            $targetUri['host'] = isset($referenceUri['host']) ? $referenceUri['host'] : '';
-            $targetUri['path'] = isset($referenceUri['path']) ? $this->removeDotSegments($referenceUri['path']) : '';
-            $targetUri['query'] = isset($referenceUri['query']) ? $referenceUri['query'] : '';
+            $targetUri['host'] = isset($referenceUri['host'])
+                ? $referenceUri['host'] : '';
+            $targetUri['path'] = isset($referenceUri['path'])
+                ? $this->removeDotSegments($referenceUri['path']) : '';
+            $targetUri['query'] = isset($referenceUri['query'])
+                ? $referenceUri['query'] : '';
         }
 
-        $targetUri['fragment'] = isset($referenceUri['fragment']) ? $referenceUri['fragment'] : '';
+        $targetUri['fragment'] = isset($referenceUri['fragment'])
+            ? $referenceUri['fragment'] : '';
 
         return $this->recomposition($targetUri);
     }
 
     /**
-     * @param $baseUri array
+     * @param $baseUri      array
      * @param $referenceUri array
-     * @param $targetUri array
+     * @param $targetUri    array
+     *
      * @return array
      */
     private function caseNoScheme($baseUri, $referenceUri, $targetUri)
@@ -48,8 +56,10 @@ class UriResolver
             $targetUri = $this->caseNoHost($baseUri, $referenceUri, $targetUri);
         } else {
             $targetUri['host'] = $referenceUri['host'];
-            $targetUri['path'] = isset($referenceUri['path']) ? $this->removeDotSegments($referenceUri['path']) : '';
-            $targetUri['query'] = isset($referenceUri['query']) ? $referenceUri['query'] : '';
+            $targetUri['path'] = isset($referenceUri['path'])
+                ? $this->removeDotSegments($referenceUri['path']) : '';
+            $targetUri['query'] = isset($referenceUri['query'])
+                ? $referenceUri['query'] : '';
         }
 
         return $targetUri;
@@ -57,9 +67,10 @@ class UriResolver
     }
 
     /**
-     * @param $baseUri array
+     * @param $baseUri      array
      * @param $referenceUri array
-     * @param $targetUri array
+     * @param $targetUri    array
+     *
      * @return array
      */
     private function caseNoHost($baseUri, $referenceUri, $targetUri)
@@ -70,48 +81,57 @@ class UriResolver
             $targetUri = $this->caseNoPath($baseUri, $referenceUri, $targetUri);
         } else {
             if (strpos($referenceUri['path'], '/') === 0) {
-                $targetUri['path'] = self::removeDotSegments($referenceUri['path']);
+                $targetUri['path']
+                    = self::removeDotSegments($referenceUri['path']);
             } else {
-                $targetUri['path'] = self::mergePath($baseUri, $referenceUri['path']);
-                $targetUri['path'] = self::removeDotSegments($targetUri['path']);
+                $targetUri['path'] = self::mergePath($baseUri,
+                    $referenceUri['path']);
+                $targetUri['path']
+                    = self::removeDotSegments($targetUri['path']);
             }
 
-            $targetUri['query'] = isset($referenceUri['query']) ? $referenceUri['query'] : '';
+            $targetUri['query'] = isset($referenceUri['query'])
+                ? $referenceUri['query'] : '';
         }
 
         return $targetUri;
     }
 
     /**
-     * @param $baseUri array
+     * @param $baseUri      array
      * @param $referenceUri array
-     * @param $targetUri array
+     * @param $targetUri    array
+     *
      * @return array
      */
     private function caseNoPath($baseUri, $referenceUri, $targetUri)
     {
         $targetUri['path'] = $baseUri['path'];
-        $targetUri['query'] = isset($referenceUri['query']) ? $referenceUri['query'] : (isset($baseUri['query']) ? $baseUri['query'] : '');
+        $targetUri['query'] = isset($referenceUri['query'])
+            ? $referenceUri['query']
+            : (isset($baseUri['query']) ? $baseUri['query'] : '');
 
         return $targetUri;
     }
 
     /**
      * @param $baseUri array
-     * @param $path string
+     * @param $path    string
+     *
      * @return string
      */
     private function mergePath($baseUri, $path)
     {
         if (isset($baseUri['host']) and empty($baseUri['path'])) {
-            return '/'.$path;
+            return '/' . $path;
         }
 
-        return preg_replace('#[^/]*$#', '', $baseUri['path']).$path;
+        return preg_replace('#[^/]*$#', '', $baseUri['path']) . $path;
     }
 
     /**
      * @param $input string
+     *
      * @return string
      */
     public function removeDotSegments($input)
@@ -129,7 +149,7 @@ class UriResolver
 
             // replace [/./] [/.] to [/]
             // ref. RFC3986 appendix A
-            $regex = '#^(/\./|(/\.)(?![\.\w\d-._~%:?\#\[\]@!$&\'()*+,;=]))#u';
+            $regex = '#^(/\./|(/\.)(?![\.\w\d\-._~%:?\#\[\]@!$&\'()*+,;=]))#u';
             if (preg_match($regex, $input) === 1) {
                 $input = preg_replace($regex, '/', $input);
 
@@ -138,7 +158,8 @@ class UriResolver
 
             // replace [/../] [/..] to [/]
             // ref. RFC3986 appendix A
-            $regex = '#^(/\.\./|(/\.\.)(?![\.\w\d-._~%:?\#\[\]@!$&\'()*+,;=]))#u';
+            $regex
+                = '#^(/\.\./|(/\.\.)(?![\.\w\d\-._~%:?\#\[\]@!$&\'()*+,;=]))#u';
             if (preg_match($regex, $input) === 1) {
                 $input = preg_replace($regex, '/', $input);
                 if (!empty($output)) {
@@ -176,6 +197,7 @@ class UriResolver
 
     /**
      * @param $targetUri array
+     *
      * @return string
      */
     private function recomposition($targetUri)
@@ -183,11 +205,11 @@ class UriResolver
         $uri = '';
 
         if ($targetUri['scheme'] !== '') {
-            $uri .= $targetUri['scheme'].':';
+            $uri .= $targetUri['scheme'] . ':';
         }
 
         if ($targetUri['host'] !== '') {
-            $uri .= '//'.$targetUri['host'];
+            $uri .= '//' . $targetUri['host'];
         }
 
         if ($targetUri['path'] !== '') {
@@ -195,11 +217,11 @@ class UriResolver
         }
 
         if ($targetUri['query'] !== '') {
-            $uri .= '?'.$targetUri['query'];
+            $uri .= '?' . $targetUri['query'];
         }
 
         if ($targetUri['fragment'] !== '') {
-            $uri .= '#'.$targetUri['fragment'];
+            $uri .= '#' . $targetUri['fragment'];
         }
 
         return $uri;
