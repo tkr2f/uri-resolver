@@ -1,24 +1,25 @@
 <?php
 
+use PHPUnit\Framework\TestCase;
 use Tkr2f\UriResolver\UriResolver;
 
 /**
  * Class UriResolverTest
  * @author Takashi Iwata <x.takashi.iwata.x@gmail.com>
  */
-class UriResolverTest extends \PHPUnit_Framework_TestCase
+class UriResolverTest extends TestCase
 {
     /**
      * @var UriResolver
      */
     protected $UriResolver;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->UriResolver = new Tkr2f\UriResolver\UriResolver();
     }
 
-    public function testResolveNormalPattern()
+    public function testResolveNormalPattern(): void
     {
         //RFC3986 5.4.1
         $this->assertEquals('g:h', $this->UriResolver->resolve('http://a/b/c/d;p?q', 'g:h'));
@@ -49,7 +50,7 @@ class UriResolverTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('http://a/b/c#s', $this->UriResolver->resolve('http://a/b/c', '#s'));
     }
 
-    public function testResolvePeculiarPattern()
+    public function testResolvePeculiarPattern(): void
     {
         //RFC3986 5.4.2
         $this->assertEquals('http://a/g', $this->UriResolver->resolve('http://a/b/c/d;p?q', '../../../g'));

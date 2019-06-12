@@ -1,21 +1,23 @@
 <?php
 
+use PHPUnit\Framework\TestCase;
 use Tkr2f\UriResolver\UriResolver;
+use Tkr2f\UriResolver\UriResolverFactory;
 
 /**
  * Class UriResolverFactoryTest
  * @author Takashi Iwata <x.takashi.iwata.x@gmail.com>
  */
-class UriResolverFactoryTest extends \PHPUnit_Framework_TestCase
+class UriResolverFactoryTest extends TestCase
 {
-    public function testGetMethodReturnUriResolverInstance()
+    public function testGetMethodReturnUriResolverInstance(): void
     {
-        $this->assertInstanceOf(UriResolver::class, \Tkr2f\UriResolver\UriResolverFactory::get());
+        $this->assertInstanceOf(UriResolver::class, UriResolverFactory::get());
     }
 
-    public function testGetMethodReturnSameUriResolverInstance()
+    public function testGetMethodReturnSameUriResolverInstance(): void
     {
-        $uriResolver = \Tkr2f\UriResolver\UriResolverFactory::get();
-        $this->assertSame($uriResolver, \Tkr2f\UriResolver\UriResolverFactory::get());
+        $uriResolver = UriResolverFactory::get();
+        $this->assertSame($uriResolver, UriResolverFactory::get());
     }
 }
