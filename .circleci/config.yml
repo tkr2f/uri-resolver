@@ -2,7 +2,7 @@ version: 2
 jobs:
   build:
     docker:
-      - image: circleci/php:7.3.6-cli-alpine3.9
+      - image: circleci/php:7.3.6-cli-stretch
     steps:
       - checkout
       - run: sudo apt update
