@@ -1,6 +1,8 @@
 # UriResolver
 
-Resolver of URI reference implemented based on RFC 3986. 
+[![CircleCI](https://circleci.com/gh/tkr2f/uri-resolver/tree/master.svg?style=svg)](https://circleci.com/gh/tkr2f/uri-resolver/tree/master)
+
+Resolver of URI reference implemented based on RFC 3986.
 
 The pattern of URI that can be resolved is based on RFC 3986, look at the test case.
 
