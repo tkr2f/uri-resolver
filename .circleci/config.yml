@@ -16,4 +16,4 @@ jobs:
           key: v1-dependencies-{{ checksum "composer.json" }}
           paths:
             - ./vendor
-      - run: ./script/phpunit.sh
+      - run: ./vendor/bin/phpunit
