@@ -1,6 +1,7 @@
 # UriResolver
 
-[![CircleCI](https://circleci.com/gh/tkr2f/uri-resolver/tree/master.svg?style=svg)](https://circleci.com/gh/tkr2f/uri-resolver/tree/master)
+[![CircleCI](https://img.shields.io/circleci/build/github/tkr2f/uri-resolver.svg)](https://circleci.com/gh/tkr2f/uri-resolver)
+[![GitHub licence](![GitHub](https://img.shields.io/github/license/tkr2f/uri-resolver.svg))](https://github.com/tkr2f/uri-resolver/blob/master/LICENSE)
 
 Resolver of URI reference implemented based on RFC 3986.
 
