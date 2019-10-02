@@ -82,12 +82,12 @@ class UriResolver
         } else {
             if (strpos($referenceUri['path'], '/') === 0) {
                 $targetUri['path']
-                    = self::removeDotSegments($referenceUri['path']);
+                    = $this->removeDotSegments($referenceUri['path']);
             } else {
-                $targetUri['path'] = self::mergePath($baseUri,
+                $targetUri['path'] = $this->mergePath($baseUri,
                     $referenceUri['path']);
                 $targetUri['path']
-                    = self::removeDotSegments($targetUri['path']);
+                    = $this->removeDotSegments($targetUri['path']);
             }
 
             $targetUri['query'] = isset($referenceUri['query'])
