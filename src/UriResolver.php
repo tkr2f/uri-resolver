@@ -32,12 +32,9 @@ class UriResolver
             $targetUri = $this->caseNoScheme($baseUri, $referenceUri, $targetUri);
         } else {
             $targetUri['scheme'] = $referenceUri['scheme'];
-            $targetUri['host'] = isset($referenceUri['host'])
-                ? $referenceUri['host'] : '';
-            $targetUri['path'] = isset($referenceUri['path'])
-                ? $this->removeDotSegments($referenceUri['path']) : '';
-            $targetUri['query'] = isset($referenceUri['query'])
-                ? $referenceUri['query'] : '';
+            $targetUri['host'] = $referenceUri['host'] ?? '';
+            $targetUri['path'] = $referenceUri['path'] ?? '';
+            $targetUri['query'] = $referenceUri['query'] ?? '';
         }
 
         $targetUri['fragment'] = $referenceUri['fragment'] ?? null;
@@ -60,10 +57,8 @@ class UriResolver
             $targetUri = $this->caseNoHost($baseUri, $referenceUri, $targetUri);
         } else {
             $targetUri['host'] = $referenceUri['host'];
-            $targetUri['path'] = isset($referenceUri['path'])
-                ? $this->removeDotSegments($referenceUri['path']) : '';
-            $targetUri['query'] = isset($referenceUri['query'])
-                ? $referenceUri['query'] : '';
+            $targetUri['path'] = isset($referenceUri['path']) ? $this->removeDotSegments($referenceUri['path']) : '';
+            $targetUri['query'] = isset($referenceUri['query']) ? $referenceUri['query'] : '';
         }
 
         return $targetUri;
@@ -84,17 +79,13 @@ class UriResolver
             $targetUri = $this->caseNoPath($baseUri, $referenceUri, $targetUri);
         } else {
             if (strpos($referenceUri['path'], '/') === 0) {
-                $targetUri['path']
-                    = $this->removeDotSegments($referenceUri['path']);
+                $targetUri['path'] = $this->removeDotSegments($referenceUri['path']);
             } else {
-                $targetUri['path'] = $this->mergePath($baseUri,
-                    $referenceUri['path']);
-                $targetUri['path']
-                    = $this->removeDotSegments($targetUri['path']);
+                $targetUri['path'] = $this->mergePath($baseUri, $referenceUri['path']);
+                $targetUri['path'] = $this->removeDotSegments($targetUri['path']);
             }
 
-            $targetUri['query'] = isset($referenceUri['query'])
-                ? $referenceUri['query'] : '';
+            $targetUri['query'] = isset($referenceUri['query']) ? $referenceUri['query'] : '';
         }
 
         return $targetUri;
