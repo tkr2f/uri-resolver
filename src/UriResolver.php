@@ -19,7 +19,13 @@ class UriResolver
     public function resolve(string $baseUri, string $referenceUri): string
     {
         $baseUri = parse_url($baseUri);
-        $referenceUri = parse_url($referenceUri);
+
+        // To fix behavior of getting fragment of parse_url
+        if ($referenceUri === '#') {
+            $referenceUri = ['fragment' => ''];
+        } else {
+            $referenceUri = parse_url($referenceUri);
+        }
 
         $targetUri = [];
         if (!isset($referenceUri['scheme']) or $referenceUri['scheme'] === '') {
@@ -35,8 +41,7 @@ class UriResolver
                 ? $referenceUri['query'] : '';
         }
 
-        $targetUri['fragment'] = isset($referenceUri['fragment'])
-            ? $referenceUri['fragment'] : '';
+        $targetUri['fragment'] = $referenceUri['fragment'] ?? null;
 
         return $this->recomposition($targetUri);
     }
@@ -220,7 +225,7 @@ class UriResolver
             $uri .= '?' . $targetUri['query'];
         }
 
-        if ($targetUri['fragment'] !== '') {
+        if ($targetUri['fragment'] !== null) {
             $uri .= '#' . $targetUri['fragment'];
         }
 

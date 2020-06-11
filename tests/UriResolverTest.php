@@ -73,4 +73,20 @@ class UriResolverTest extends TestCase
         $this->assertEquals('http://a/b/c/g#s/../x', $this->UriResolver->resolve('http://a/b/c/d;p?q', 'g#s/../x'));
         $this->assertEquals('http:g', $this->UriResolver->resolve('http://a/b/c/d;p?q', 'http:g'));
     }
+
+    public function testResolveAdditionalPattern(): void
+    {
+        // Uri resolving errors #2
+        $this->assertEquals('http://localhost/bar/#', $this->UriResolver->resolve('http://localhost/bar/', '#'));
+        $this->assertEquals('http://localhost/bar#', $this->UriResolver->resolve('http://localhost/bar', '#'));
+        $this->assertEquals('http://localhost/bar#s', $this->UriResolver->resolve('http://localhost/bar', '#s'));
+        $this->assertEquals('http://localhost/bar/#s', $this->UriResolver->resolve('http://localhost/bar/', '#s'));
+        $this->assertEquals('http://localhost/bar?foo=1#', $this->UriResolver->resolve('http://localhost/bar?foo=1', '#'));
+        $this->assertEquals('http://localhost?foo=2', $this->UriResolver->resolve('http://localhost?foo=1', '?foo=2'));
+        $this->assertEquals('http://localhost?bar=2', $this->UriResolver->resolve('http://localhost?foo=1', '?bar=2'));
+        $this->assertEquals('file:///foo', $this->UriResolver->resolve('file:///', '/foo'));
+        $this->assertEquals('file:///foo', $this->UriResolver->resolve('file:///bar/baz', '/foo'));
+        $this->assertEquals('file:///foo', $this->UriResolver->resolve('file:///', 'foo'));
+        $this->assertEquals('file:///bar/foo', $this->UriResolver->resolve('file:///bar/baz', 'foo'));
+    }
 }
