@@ -19,24 +19,25 @@ class UriResolver
     public function resolve(string $baseUri, string $referenceUri): string
     {
         $baseUri = parse_url($baseUri);
-        $referenceUri = parse_url($referenceUri);
 
-        $targetUri = [];
-        if (!isset($referenceUri['scheme']) or $referenceUri['scheme'] === '') {
-            $targetUri = $this->caseNoScheme($baseUri, $referenceUri,
-                $targetUri);
+        // To fix behavior of getting fragment of parse_url
+        if ($referenceUri === '#') {
+            $referenceUri = ['fragment' => ''];
         } else {
-            $targetUri['scheme'] = $referenceUri['scheme'];
-            $targetUri['host'] = isset($referenceUri['host'])
-                ? $referenceUri['host'] : '';
-            $targetUri['path'] = isset($referenceUri['path'])
-                ? $this->removeDotSegments($referenceUri['path']) : '';
-            $targetUri['query'] = isset($referenceUri['query'])
-                ? $referenceUri['query'] : '';
+            $referenceUri = parse_url($referenceUri);
         }
 
-        $targetUri['fragment'] = isset($referenceUri['fragment'])
-            ? $referenceUri['fragment'] : '';
+        $targetUri = [];
+        if (!isset($referenceUri['scheme']) || $referenceUri['scheme'] === '') {
+            $targetUri = $this->caseNoScheme($baseUri, $referenceUri, $targetUri);
+        } else {
+            $targetUri['scheme'] = $referenceUri['scheme'];
+            $targetUri['host'] = $referenceUri['host'] ?? '';
+            $targetUri['path'] = $referenceUri['path'] ?? '';
+            $targetUri['query'] = $referenceUri['query'] ?? '';
+        }
+
+        $targetUri['fragment'] = $referenceUri['fragment'] ?? null;
 
         return $this->recomposition($targetUri);
     }
@@ -52,18 +53,15 @@ class UriResolver
     {
         $targetUri['scheme'] = $baseUri['scheme'];
 
-        if (!isset($referenceUri['host']) or $referenceUri['host'] === '') {
+        if (!isset($referenceUri['host']) || $referenceUri['host'] === '') {
             $targetUri = $this->caseNoHost($baseUri, $referenceUri, $targetUri);
         } else {
             $targetUri['host'] = $referenceUri['host'];
-            $targetUri['path'] = isset($referenceUri['path'])
-                ? $this->removeDotSegments($referenceUri['path']) : '';
-            $targetUri['query'] = isset($referenceUri['query'])
-                ? $referenceUri['query'] : '';
+            $targetUri['path'] = isset($referenceUri['path']) ? $this->removeDotSegments($referenceUri['path']) : '';
+            $targetUri['query'] = isset($referenceUri['query']) ? $referenceUri['query'] : '';
         }
 
         return $targetUri;
-
     }
 
     /**
@@ -75,23 +73,19 @@ class UriResolver
      */
     private function caseNoHost($baseUri, $referenceUri, $targetUri)
     {
-        $targetUri['host'] = $baseUri['host'];
+        $targetUri['host'] = $baseUri['host'] ?? null;
 
-        if (!isset($referenceUri['path']) or $referenceUri['path'] === '') {
+        if (!isset($referenceUri['path']) || $referenceUri['path'] === '') {
             $targetUri = $this->caseNoPath($baseUri, $referenceUri, $targetUri);
         } else {
             if (strpos($referenceUri['path'], '/') === 0) {
-                $targetUri['path']
-                    = $this->removeDotSegments($referenceUri['path']);
+                $targetUri['path'] = $this->removeDotSegments($referenceUri['path']);
             } else {
-                $targetUri['path'] = $this->mergePath($baseUri,
-                    $referenceUri['path']);
-                $targetUri['path']
-                    = $this->removeDotSegments($targetUri['path']);
+                $targetUri['path'] = $this->mergePath($baseUri, $referenceUri['path']);
+                $targetUri['path'] = $this->removeDotSegments($targetUri['path']);
             }
 
-            $targetUri['query'] = isset($referenceUri['query'])
-                ? $referenceUri['query'] : '';
+            $targetUri['query'] = isset($referenceUri['query']) ? $referenceUri['query'] : '';
         }
 
         return $targetUri;
@@ -106,7 +100,7 @@ class UriResolver
      */
     private function caseNoPath($baseUri, $referenceUri, $targetUri)
     {
-        $targetUri['path'] = $baseUri['path'];
+        $targetUri['path'] = $baseUri['path'] ?? null;
         $targetUri['query'] = isset($referenceUri['query'])
             ? $referenceUri['query']
             : (isset($baseUri['query']) ? $baseUri['query'] : '');
@@ -122,7 +116,7 @@ class UriResolver
      */
     private function mergePath($baseUri, $path)
     {
-        if (isset($baseUri['host']) and empty($baseUri['path'])) {
+        if (isset($baseUri['host']) && empty($baseUri['path'])) {
             return '/' . $path;
         }
 
@@ -220,7 +214,7 @@ class UriResolver
             $uri .= '?' . $targetUri['query'];
         }
 
-        if ($targetUri['fragment'] !== '') {
+        if ($targetUri['fragment'] !== null) {
             $uri .= '#' . $targetUri['fragment'];
         }
 
