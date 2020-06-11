@@ -28,9 +28,8 @@ class UriResolver
         }
 
         $targetUri = [];
-        if (!isset($referenceUri['scheme']) or $referenceUri['scheme'] === '') {
-            $targetUri = $this->caseNoScheme($baseUri, $referenceUri,
-                $targetUri);
+        if (!isset($referenceUri['scheme']) || $referenceUri['scheme'] === '') {
+            $targetUri = $this->caseNoScheme($baseUri, $referenceUri, $targetUri);
         } else {
             $targetUri['scheme'] = $referenceUri['scheme'];
             $targetUri['host'] = isset($referenceUri['host'])
@@ -57,7 +56,7 @@ class UriResolver
     {
         $targetUri['scheme'] = $baseUri['scheme'];
 
-        if (!isset($referenceUri['host']) or $referenceUri['host'] === '') {
+        if (!isset($referenceUri['host']) || $referenceUri['host'] === '') {
             $targetUri = $this->caseNoHost($baseUri, $referenceUri, $targetUri);
         } else {
             $targetUri['host'] = $referenceUri['host'];
@@ -68,7 +67,6 @@ class UriResolver
         }
 
         return $targetUri;
-
     }
 
     /**
@@ -82,7 +80,7 @@ class UriResolver
     {
         $targetUri['host'] = $baseUri['host'];
 
-        if (!isset($referenceUri['path']) or $referenceUri['path'] === '') {
+        if (!isset($referenceUri['path']) || $referenceUri['path'] === '') {
             $targetUri = $this->caseNoPath($baseUri, $referenceUri, $targetUri);
         } else {
             if (strpos($referenceUri['path'], '/') === 0) {
@@ -127,7 +125,7 @@ class UriResolver
      */
     private function mergePath($baseUri, $path)
     {
-        if (isset($baseUri['host']) and empty($baseUri['path'])) {
+        if (isset($baseUri['host']) && empty($baseUri['path'])) {
             return '/' . $path;
         }
 
