@@ -21,7 +21,7 @@ class UriResolverTest extends TestCase
 
     public function testResolveNormalPattern(): void
     {
-        //RFC3986 5.4.1
+        // RFC3986 5.4.1
         $this->assertEquals('g:h', $this->UriResolver->resolve('http://a/b/c/d;p?q', 'g:h'));
         $this->assertEquals('http://a/b/c/g', $this->UriResolver->resolve('http://a/b/c/d;p?q', 'g'));
         $this->assertEquals('http://a/b/c/g', $this->UriResolver->resolve('http://a/b/c/d;p?q', './g'));
@@ -46,13 +46,13 @@ class UriResolverTest extends TestCase
         $this->assertEquals('http://a/', $this->UriResolver->resolve('http://a/b/c/d;p?q', '../../'));
         $this->assertEquals('http://a/g', $this->UriResolver->resolve('http://a/b/c/d;p?q', '../../g'));
 
-        //additional
+        // additional
         $this->assertEquals('http://a/b/c#s', $this->UriResolver->resolve('http://a/b/c', '#s'));
     }
 
     public function testResolvePeculiarPattern(): void
     {
-        //RFC3986 5.4.2
+        // RFC3986 5.4.2
         $this->assertEquals('http://a/g', $this->UriResolver->resolve('http://a/b/c/d;p?q', '../../../g'));
         $this->assertEquals('http://a/g', $this->UriResolver->resolve('http://a/b/c/d;p?q', '../../../../g'));
         $this->assertEquals('http://a/g', $this->UriResolver->resolve('http://a/b/c/d;p?q', '/./g'));
