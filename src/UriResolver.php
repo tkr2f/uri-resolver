@@ -73,7 +73,7 @@ class UriResolver
      */
     private function caseNoHost($baseUri, $referenceUri, $targetUri)
     {
-        $targetUri['host'] = $baseUri['host'];
+        $targetUri['host'] = $baseUri['host'] ?? null;
 
         if (!isset($referenceUri['path']) || $referenceUri['path'] === '') {
             $targetUri = $this->caseNoPath($baseUri, $referenceUri, $targetUri);
@@ -100,7 +100,7 @@ class UriResolver
      */
     private function caseNoPath($baseUri, $referenceUri, $targetUri)
     {
-        $targetUri['path'] = $baseUri['path'];
+        $targetUri['path'] = $baseUri['path'] ?? null;
         $targetUri['query'] = isset($referenceUri['query'])
             ? $referenceUri['query']
             : (isset($baseUri['query']) ? $baseUri['query'] : '');
